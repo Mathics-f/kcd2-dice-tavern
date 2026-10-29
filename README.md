@@ -5,6 +5,8 @@
 
 纯 Python 标准库，没有第三方依赖；页面也就一个 HTML + 一个 CSS + 一个 JS。
 
+> 👉 **第一次来？** 看 [TUTORIAL.md](TUTORIAL.md)：从零跑起来 → 接进自己的 QQ 机器人 → 挂到公网，一步步写好了。
+
 ![规则](https://img.shields.io/badge/rules-Farkle%2FKCD2-amber) ![python](https://img.shields.io/badge/python-3.9%2B-blue)
 
 ## 目录
@@ -21,6 +23,7 @@ dice-tavern/
 ├── server.py       本地服务 + 页面 + HTTP 接口
 ├── web/            index.html / style.css / app.js
 ├── tests/          单测
+├── TUTORIAL.md     面向新人的上手教程
 ├── config_local.py 本地私人配置（模板见下，已 gitignore）
 └── 启动牌馆.bat     Windows 双击启动
 ```
