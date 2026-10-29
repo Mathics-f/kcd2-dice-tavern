@@ -1,0 +1,8 @@
+# 本地私人配置（模板）
+#
+# 复制本文件为 config_local.py 再填；config_local.py 已在 .gitignore 里，不会被提交。
+# 不建这个文件也能跑：所有配置都可以用环境变量给（见 README）。
+
+OWNER_QQ = "你的QQ号"        # 逗号分隔多个；这些号在群里发骰子会被认成"主人"
+OWNER_IPS = ""               # 你的公网 IP，想在外面玩也被认成主人就填（支持 1.2.3.*）
+SECRETS_PATH = ""            # 不填就用同目录 secrets.json

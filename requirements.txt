@@ -1,0 +1,5 @@
+# 零第三方依赖：Python 3.9+ 标准库即可运行。
+#
+# 可选（想让她"本人"说话/拍板时）：
+#   - 只需要一个 DeepSeek API Key，程序自己用 urllib 调官方接口，不用装 SDK。
+#   - 想用 openai SDK 的也可以：pip install openai，但本仓库不需要。

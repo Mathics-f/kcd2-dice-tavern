@@ -1,0 +1,208 @@
+/* 骰子酒馆 · 木桌与烛光 */
+:root{
+  --ink:#f3e6cf;
+  --ink-dim:#b8a68c;
+  --bg:#120e0b;
+  --panel:#1e1712;
+  --panel2:#261c15;
+  --line:#3d2d21;
+  --amber:#e9b45f;
+  --amber-deep:#c2873a;
+  --wine:#8c3b32;
+  --green:#7d9b6a;
+  --die:#f6efdf;
+  --die-ink:#22190f;
+  --shadow:0 18px 40px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;color:var(--ink);font:15px/1.55 "PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  background:
+    radial-gradient(1200px 700px at 50% -10%, #3a2a1d 0%, transparent 60%),
+    radial-gradient(800px 600px at 90% 110%, #2a1d14 0%, transparent 55%),
+    var(--bg);
+  min-height:100%;
+}
+body::before{ /* 桌布纹理 */
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;
+  background:repeating-linear-gradient(45deg,#000 0 2px,transparent 2px 6px);
+}
+#app{max-width:1180px;margin:0 auto;padding:22px 20px 40px;position:relative}
+
+/* ---------- 顶栏 ---------- */
+.top{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{
+  width:52px;height:52px;display:grid;place-items:center;font-size:27px;border-radius:14px;
+  background:linear-gradient(160deg,#3a2a1c,#221812);border:1px solid var(--line);
+  box-shadow:inset 0 1px 0 #6a5137, var(--shadow);
+}
+.brand h1{margin:0;font-size:23px;letter-spacing:.14em;font-weight:600;color:#f7e9cd}
+.brand p{margin:2px 0 0;font-size:12px;color:var(--ink-dim);letter-spacing:.06em}
+.setup{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.setup label{font-size:12px;color:var(--ink-dim);display:flex;align-items:center;gap:6px}
+select{
+  background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:9px;
+  padding:7px 9px;font:inherit;font-size:13px;outline:none;
+}
+select:focus{border-color:var(--amber-deep)}
+
+/* ---------- 按钮 ---------- */
+.btn{
+  font:inherit;font-size:14px;cursor:pointer;color:var(--ink);background:linear-gradient(#2e2319,#211811);
+  border:1px solid var(--line);border-radius:11px;padding:10px 18px;letter-spacing:.05em;
+  transition:transform .12s ease,border-color .15s,box-shadow .15s,filter .15s;
+  box-shadow:0 2px 0 #0b0806, inset 0 1px 0 rgba(255,255,255,.06);
+}
+.btn:hover:not(:disabled){transform:translateY(-1px);border-color:#6b4f34}
+.btn:active:not(:disabled){transform:translateY(1px);box-shadow:none}
+.btn:disabled{opacity:.38;cursor:not-allowed;filter:saturate(.4)}
+.btn.primary{background:linear-gradient(#eec273,#c2873a);color:#241a10;border-color:#f0cd8e;font-weight:700}
+.btn.gold{background:linear-gradient(#7d5a2c,#5a3f1e);border-color:#8a6534;color:#f7e3b8}
+.btn.tiny{padding:6px 11px;font-size:12px;border-radius:9px}
+
+/* ---------- 布局 ---------- */
+.board{display:grid;grid-template-columns:1fr 330px;grid-template-areas:"players players" "tray side";gap:16px}
+.players{grid-area:players;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tray{grid-area:tray}
+.side{grid-area:side}
+@media (max-width:880px){
+  .board{grid-template-columns:1fr;grid-template-areas:"players" "tray" "side"}
+  .players{grid-template-columns:1fr}
+}
+
+/* ---------- 玩家卡 ---------- */
+.pcard{
+  position:relative;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;
+  background:linear-gradient(180deg,var(--panel),#1a130e);border:1px solid var(--line);
+  box-shadow:var(--shadow);transition:border-color .2s,box-shadow .2s,transform .2s;
+}
+.pcard.placeholder{color:#5b4a38;justify-content:center;font-size:13px}
+.pcard.active{border-color:var(--amber-deep);box-shadow:0 0 0 1px rgba(233,180,95,.28), var(--shadow);transform:translateY(-2px)}
+.pcard.active::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--amber),transparent);
+}
+.pcard .avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:20px;
+  background:#2b2018;border:1px solid #4a3728}
+.pcard .who{flex:1;min-width:0}
+.pcard .name{font-size:15px;letter-spacing:.04em}
+.pcard .role{font-size:11px;color:var(--ink-dim);letter-spacing:.08em;margin-top:1px}
+.pcard .score{font-size:26px;font-weight:700;color:var(--amber);font-variant-numeric:tabular-nums}
+.pcard .score small{font-size:11px;color:var(--ink-dim);font-weight:400;margin-left:3px}
+.pcard .bar{position:absolute;left:16px;right:16px;bottom:6px;height:3px;border-radius:3px;background:#31241a;overflow:hidden}
+.pcard .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#a5702f,var(--amber));transition:width .5s ease}
+
+/* ---------- 牌桌 ---------- */
+.tray{
+  padding:20px;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow);
+  background:
+    radial-gradient(900px 320px at 50% 0%, rgba(120,80,40,.20), transparent 70%),
+    linear-gradient(180deg,#241a13,#1a120d);
+  min-height:430px;display:flex;flex-direction:column;gap:14px;
+}
+.turnbar{font-size:13px;color:var(--ink-dim);letter-spacing:.08em;min-height:20px}
+.turnbar b{color:var(--amber);font-weight:600}
+.whoTag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:999px;margin:-2px 0 8px;
+  border:1px solid var(--line);color:var(--ink-dim);background:rgba(0,0,0,.18)}
+.whoTag.owner{color:#ffd9a0;border-color:rgba(255,196,66,.4);background:rgba(255,196,66,.08)}
+.whoTag.stranger{color:#9fb4c8;border-color:rgba(159,180,200,.25)}
+
+.stage{flex:1;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
+  min-height:150px;padding:16px 6px;border-radius:16px;
+  border:1px dashed #3a2a1e;background:rgba(0,0,0,.18)}
+.stage .empty{color:#63503c;font-size:13px;letter-spacing:.1em}
+
+/* ---------- 骰子 ---------- */
+.die{
+  position:relative;width:62px;height:62px;border-radius:14px;background:var(--die);
+  box-shadow:0 8px 16px rgba(0,0,0,.5), inset 0 -3px 0 #d8cdb6, inset 0 2px 0 #fffdf6;
+  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
+  padding:9px;gap:2px;cursor:default;transition:transform .16s ease,box-shadow .16s,outline-color .16s;
+  outline:2px solid transparent;outline-offset:3px;user-select:none;
+}
+.die .pip{width:100%;height:100%;border-radius:50%;place-self:center;max-width:12px;max-height:12px;
+  background:radial-gradient(circle at 35% 30%,#5a4632,#1d1408);opacity:0}
+.die .pip.on{opacity:1}
+.die.clickable{cursor:pointer}
+.die.clickable:hover{transform:translateY(-4px) rotate(-1.5deg)}
+.die.sel{outline-color:var(--amber);transform:translateY(-6px);box-shadow:0 12px 22px rgba(0,0,0,.55), 0 0 18px rgba(233,180,95,.45)}
+.die.small{width:34px;height:34px;border-radius:9px;padding:5px;box-shadow:0 3px 8px rgba(0,0,0,.45)}
+.die.small .pip{max-width:5px;max-height:5px}
+.die.rolling{animation:tumble .55s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes tumble{
+  0%{transform:translateY(-46px) rotate(-160deg) scale(.72);opacity:.25}
+  55%{transform:translateY(4px) rotate(12deg) scale(1.06)}
+  80%{transform:translateY(-3px) rotate(-4deg) scale(.99)}
+  100%{transform:none;opacity:1}
+}
+.die.hot{box-shadow:0 0 0 2px var(--amber), 0 10px 20px rgba(233,180,95,.35)}
+
+/* 爆骰：骰子留在桌上亮着，红一圈、抖一下 */
+.stage.bust{border-color:var(--wine);border-style:solid;
+  background:radial-gradient(600px 200px at 50% 50%, rgba(140,59,50,.16), rgba(0,0,0,.18));
+  box-shadow:inset 0 0 46px rgba(140,59,50,.22)}
+.die.busted{
+  box-shadow:0 0 0 2px var(--wine), 0 10px 20px rgba(0,0,0,.5), 0 0 26px rgba(140,59,50,.6);
+  animation:shakeBust 1.25s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes shakeBust{
+  8%,92%{transform:translateX(-3px) rotate(-1.5deg)}
+  18%,82%{transform:translateX(4px) rotate(1.5deg)}
+  30%,48%,66%{transform:translateX(-6px) rotate(-2.5deg)}
+  40%,58%,74%{transform:translateX(6px) rotate(2.5deg)}
+}
+.stage.bust{animation:dimPulse 1.25s ease-in-out both}
+@keyframes dimPulse{0%,100%{filter:none}35%{filter:saturate(.72) brightness(.86)}}
+
+.heldwrap{display:flex;align-items:center;gap:10px;min-height:40px}
+.heldwrap .lbl{font-size:11px;letter-spacing:.14em;color:#6f5a44}
+.held{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+
+/* ---------- 可选组合 chips ---------- */
+.chips{display:flex;gap:8px;flex-wrap:wrap;min-height:30px}
+.chip{
+  font:inherit;font-size:12px;cursor:pointer;padding:6px 11px;border-radius:999px;
+  color:#f0dcbb;background:#2a1f16;border:1px solid #4b3724;letter-spacing:.03em;
+  transition:border-color .15s,background .15s,transform .12s;
+}
+.chip:hover{border-color:var(--amber-deep);background:#33251a;transform:translateY(-1px)}
+.chip b{color:var(--amber);font-weight:600}
+
+/* ---------- 操作区 ---------- */
+.actions{display:flex;gap:10px;justify-content:center;padding-top:2px}
+.hint{font-size:12px;color:#7d6650;text-align:center;min-height:18px;letter-spacing:.04em}
+
+/* ---------- 侧栏 ---------- */
+.side{
+  padding:16px 16px 12px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),#191210);
+  box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:430px;
+}
+.side h2{margin:0 0 10px;font-size:12px;letter-spacing:.2em;color:var(--ink-dim);font-weight:500}
+.log{list-style:none;margin:0;padding:0;flex:1;overflow:auto;max-height:330px;font-size:12.5px;line-height:1.7}
+.log li{padding:5px 0;border-bottom:1px dashed #2b2018;color:#cbb99f}
+.log li:last-child{border:none}
+.log li b{color:var(--amber);font-weight:600}
+.log li.mine{color:#e5d4b8}
+.side-foot{padding-top:10px;border-top:1px solid #2b2018;display:flex;flex-direction:column;gap:8px}
+.qq{font-size:11px;color:#6f5a44;line-height:1.6}
+.qq b{color:#a98a5f}
+
+/* ---------- 结算 ---------- */
+.overlay{position:fixed;inset:0;background:rgba(8,5,3,.78);display:grid;place-items:center;z-index:40;
+  backdrop-filter:blur(3px)}
+.overlay.hidden{display:none}
+.overlay .card{padding:30px 36px;border-radius:20px;text-align:center;border:1px solid #5b4128;
+  background:linear-gradient(180deg,#2b2016,#1a120d);box-shadow:0 30px 60px rgba(0,0,0,.7);animation:pop .3s ease}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+.overlay h2{margin:0 0 8px;font-size:26px;letter-spacing:.1em;color:#f8e9c8}
+.overlay p{margin:0 0 20px;color:var(--ink-dim);font-size:13px}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  padding:11px 20px;border-radius:12px;font-size:13px;background:#2b1f16;border:1px solid #5b4128;
+  color:#f2e2c6;box-shadow:0 12px 30px rgba(0,0,0,.6);transition:opacity .2s,transform .2s;z-index:50;max-width:80vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}

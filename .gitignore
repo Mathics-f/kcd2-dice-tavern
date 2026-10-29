@@ -1,0 +1,18 @@
+# 私人配置与密钥
+config_local.py
+secrets.json
+.env
+*.key
+
+# 生成物 / 缓存
+ev_cache.json
+__pycache__/
+*.py[cod]
+*.log
+*.tgz
+
+# 本机测试与调试残留
+_test_*.py
+_*_out.txt
+_ut.txt
+_tone_log*
